@@ -13,6 +13,8 @@ import java.util.stream.IntStream;
 
 public class Demo {
 
+	private static final String GET_TOWNS = "select t from Town as t ";
+
 	public static void main(String[] args) {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("university");
 		EntityManager em = emf.createEntityManager();
@@ -22,9 +24,17 @@ public class Demo {
 
 		createSomeObjects(em);
 
+		removeObjects(em);
 		em.getTransaction().commit();
 		em.close();
 		emf.close();
+	}
+
+	private static void removeObjects(EntityManager em) {
+		List<Town> townsToDetach = em.createQuery(GET_TOWNS + "where length(t.name) > 7", Town.class).getResultList();
+		List<Town> townsList = em.createQuery(GET_TOWNS, Town.class).getResultList();
+		townsToDetach.forEach(em::detach);
+		townsList.forEach(x -> x.setName(x.getName().toLowerCase()));
 	}
 
 	private static void createSomeObjects(EntityManager em) {
@@ -70,7 +80,7 @@ public class Demo {
 	}
 
 	private static void printTowns(EntityManager em) {
-		List<Town> resultList = em.createQuery("select t from Town as t").getResultList();
+		List<Town> resultList = em.createQuery(GET_TOWNS, Town.class).getResultList();
 		resultList.forEach(town -> System.out.printf("Town name is: %s%n", town.getName()));
 	}
 }

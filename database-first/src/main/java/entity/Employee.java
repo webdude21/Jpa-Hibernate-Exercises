@@ -50,8 +50,10 @@ public class Employee {
 	)
 
 	private List<Project> projects;
+
 	public Employee() {
 	}
+
 	public Employee(String firstName, String middleName, String lastName, String jobTitle, Date hireDate, BigDecimal salary) {
 		this.firstName = firstName;
 		this.middleName = middleName;
