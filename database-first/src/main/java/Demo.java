@@ -6,6 +6,7 @@ import entity.Town;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -20,14 +21,22 @@ public class Demo {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 
-		printTowns(em);
+//		printTowns(em);
+//
+//		createSomeObjects(em);
+//
+//		removeObjects(em);
 
-		createSomeObjects(em);
-
-		removeObjects(em);
+		employeeNamesOfEmployeesWithSalaryOver(BigDecimal.valueOf(50000), em);
 		em.getTransaction().commit();
 		em.close();
 		emf.close();
+	}
+
+	private static void employeeNamesOfEmployeesWithSalaryOver(BigDecimal salary, EntityManager em) {
+		TypedQuery<String> query = em.createQuery("select e.salary from Employee e where salary > :salary", String.class);
+		query.setParameter("salary", salary);
+		query.getResultList().forEach(System.out::println);
 	}
 
 	private static void removeObjects(EntityManager em) {
