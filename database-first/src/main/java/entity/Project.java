@@ -15,10 +15,21 @@ public class Project {
 
 	@ManyToMany
 	@JoinTable(name = "employees_projects",
-			joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "project_id"),
-			inverseJoinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
+		joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "project_id"),
+		inverseJoinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
 	)
 	private List<Employee> employees;
+
+	private String name;
+
+	@Column(columnDefinition = "TEXT")
+	private String description;
+
+	@Column(name = "start_date")
+	private Date startDate;
+
+	@Column(name = "end_date")
+	private Date endDate;
 
 	public int getProjectId() {
 		return projectId;
@@ -55,15 +66,4 @@ public class Project {
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
-
-	private String name;
-
-	@Column(columnDefinition = "TEXT")
-	private String description;
-
-	@Column(name = "start_date")
-	private Date startDate;
-
-	@Column(name = "end_date")
-	private Date endDate;
 }

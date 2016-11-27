@@ -40,6 +40,13 @@ public class Employee {
 
 	@Column(name = "hire_date")
 	private Date hireDate;
+	private BigDecimal salary;
+	@ManyToMany
+	@JoinTable(name = "employees_projects",
+		joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employee_id"),
+		inverseJoinColumns = @JoinColumn(name = "project_id", referencedColumnName = "project_id")
+	)
+	private List<Project> projects;
 
 	public int getEmployeeId() {
 		return employeeId;
@@ -124,15 +131,6 @@ public class Employee {
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
 	}
-
-	private BigDecimal salary;
-
-	@ManyToMany
-	@JoinTable(name = "employees_projects",
-			joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employee_id"),
-			inverseJoinColumns = @JoinColumn(name = "project_id", referencedColumnName = "project_id")
-	)
-	private List<Project> projects;
 
 }
 

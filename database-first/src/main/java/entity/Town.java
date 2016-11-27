@@ -29,4 +29,12 @@ public class Town {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public List<Address> getAddresses() {
+		return addresses;
+	}
+
+	public void setAddresses(List<Address> addresses) {
+		this.addresses = addresses;
+	}
 }

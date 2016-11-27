@@ -11,6 +11,13 @@ public class Address {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int addressId;
 
+	@Column(name = "address_text")
+	private String addressText;
+
+	@ManyToOne
+	@JoinColumn(name = "town_id")
+	private Town town;
+
 	public int getAddressId() {
 		return addressId;
 	}
@@ -30,11 +37,4 @@ public class Address {
 	public void setTown(Town town) {
 		this.town = town;
 	}
-
-	@Column(name = "address_text")
-	private String addressText;
-
-	@ManyToOne
-	@JoinColumn(name = "town_id")
-	private Town town;
 }
