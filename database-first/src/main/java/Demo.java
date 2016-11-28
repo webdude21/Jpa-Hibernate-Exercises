@@ -34,7 +34,7 @@ public class Demo {
 
 	private static void printSelectEmployees(EntityManager em) {
 		TypedQuery<Employee> query = em.createQuery(
-			"select e from Employee e where e.department.name = 'Research and Development'", Employee.class);
+			"select e from Employee e join fetch e.department where e.department.name = 'Research and Development'", Employee.class);
 
 		query.getResultList().forEach(emp ->
 			System.out.printf("%s %s from %s - $%.2f %n", emp.getFirstName(), emp.getLastName(),
