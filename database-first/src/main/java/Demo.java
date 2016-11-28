@@ -3,10 +3,7 @@ import entity.Department;
 import entity.Employee;
 import entity.Town;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -21,20 +18,31 @@ public class Demo {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 
-//		printTowns(em);
+		//printTowns(em);
 //
 //		createSomeObjects(em);
 //
 //		removeObjects(em);
 
-		employeeNamesOfEmployeesWithSalaryOver(BigDecimal.valueOf(50000), em);
+		printSelectEmployees(em);
+
+		//employeeNamesOfEmployeesWithSalaryOver(BigDecimal.valueOf(50000), em);
 		em.getTransaction().commit();
 		em.close();
 		emf.close();
 	}
 
+	private static void printSelectEmployees(EntityManager em) {
+		TypedQuery<Employee> query = em.createQuery(
+			"select e from Employee e where e.department.name = 'Research and Development'", Employee.class);
+
+		query.getResultList().forEach(emp ->
+			System.out.printf("%s %s from %s - $%.2f %n", emp.getFirstName(), emp.getLastName(),
+				emp.getDepartment().getName(), emp.getSalary()));
+	}
+
 	private static void employeeNamesOfEmployeesWithSalaryOver(BigDecimal salary, EntityManager em) {
-		TypedQuery<String> query = em.createQuery("select e.salary from Employee e where salary > :salary", String.class);
+		TypedQuery<String> query = em.createQuery("select e.firstName from Employee e where salary > :salary", String.class);
 		query.setParameter("salary", salary);
 		query.getResultList().forEach(System.out::println);
 	}

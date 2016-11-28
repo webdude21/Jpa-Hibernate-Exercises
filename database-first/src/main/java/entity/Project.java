@@ -13,7 +13,7 @@ public class Project {
 	@Column(name = "project_id")
 	private int projectId;
 
-	@ManyToMany
+	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(name = "employees_projects",
 		joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "project_id"),
 		inverseJoinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
