@@ -29,7 +29,32 @@ public class Demo {
 		//employeeNamesOfEmployeesWithSalaryOver(BigDecimal.valueOf(50000), em);
 		em.getTransaction().commit();
 		em.close();
+
+		concurrentDatabaseChanges(emf);
 		emf.close();
+	}
+
+	private static void concurrentDatabaseChanges(EntityManagerFactory emf) {
+		EntityManager firstEntityManager = emf.createEntityManager();
+		EntityManager secondEntityManager = emf.createEntityManager();
+
+		firstEntityManager.getTransaction().begin();
+		secondEntityManager.getTransaction().begin();
+
+		Employee employee = firstEntityManager.find(Employee.class, 10);
+		Employee employeeSecond = secondEntityManager.find(Employee.class, 10);
+
+		firstEntityManager.lock(employee, LockModeType.PESSIMISTIC_WRITE);
+		secondEntityManager.lock(employeeSecond, LockModeType.PESSIMISTIC_WRITE);
+
+		employeeSecond.setFirstName("Ivan");
+		employee.setFirstName("Goshko");
+
+		firstEntityManager.getTransaction().commit();
+		secondEntityManager.getTransaction().commit();
+
+		firstEntityManager.close();
+		secondEntityManager.close();
 	}
 
 	private static void printSelectEmployees(EntityManager em) {
