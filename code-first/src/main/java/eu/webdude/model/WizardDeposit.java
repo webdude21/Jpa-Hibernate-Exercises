@@ -1,7 +1,7 @@
 package eu.webdude.model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "wizard_deposits")
@@ -10,6 +10,7 @@ public class WizardDeposit {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
 
 	@Column(name = "first_name", length = 50)
 	private String firstName;
@@ -27,25 +28,25 @@ public class WizardDeposit {
 	private String magicWandCreator;
 
 	@Column(name = "magic_wand_size")
-	private int magicWantSize;
+	private int magicWandSize;
 
 	@Column(name = "deposit_group")
 	private String depositGroup;
 
 	@Column(name = "deposit_start_date")
-	private LocalDate depositStartDate;
+	private Date depositStartDate;
 
 	@Column(name = "deposit_amount")
-	private float depositAmount;
+	private double depositAmount;
 
 	@Column(name = "deposit_interest")
-	private float depositInterest;
+	private double depositInterest;
 
 	@Column(name = "deposit_charge")
-	private float depositCharge;
+	private double depositCharge;
 
 	@Column(name = "deposit_expiration_date")
-	private float depositExpirationDate;
+	private Date depositExpirationDate;
 
 	@Column(name = "is_deposit_expired")
 	private boolean isDepositExpired;
@@ -98,12 +99,12 @@ public class WizardDeposit {
 		this.magicWandCreator = magicWandCreator;
 	}
 
-	public int getMagicWantSize() {
-		return magicWantSize;
+	public int getMagicWandSize() {
+		return magicWandSize;
 	}
 
-	public void setMagicWantSize(int magicWantSize) {
-		this.magicWantSize = magicWantSize;
+	public void setMagicWandSize(int magicWandSize) {
+		this.magicWandSize = magicWandSize;
 	}
 
 	public String getDepositGroup() {
@@ -114,43 +115,43 @@ public class WizardDeposit {
 		this.depositGroup = depositGroup;
 	}
 
-	public LocalDate getDepositStartDate() {
+	public Date getDepositStartDate() {
 		return depositStartDate;
 	}
 
-	public void setDepositStartDate(LocalDate depositStartDate) {
+	public void setDepositStartDate(Date depositStartDate) {
 		this.depositStartDate = depositStartDate;
 	}
 
-	public float getDepositAmount() {
+	public double getDepositAmount() {
 		return depositAmount;
 	}
 
-	public void setDepositAmount(float depositAmount) {
+	public void setDepositAmount(double depositAmount) {
 		this.depositAmount = depositAmount;
 	}
 
-	public float getDepositInterest() {
+	public double getDepositInterest() {
 		return depositInterest;
 	}
 
-	public void setDepositInterest(float depositInterest) {
+	public void setDepositInterest(double depositInterest) {
 		this.depositInterest = depositInterest;
 	}
 
-	public float getDepositCharge() {
+	public double getDepositCharge() {
 		return depositCharge;
 	}
 
-	public void setDepositCharge(float depositCharge) {
+	public void setDepositCharge(double depositCharge) {
 		this.depositCharge = depositCharge;
 	}
 
-	public float getDepositExpirationDate() {
+	public Date getDepositExpirationDate() {
 		return depositExpirationDate;
 	}
 
-	public void setDepositExpirationDate(float depositExpirationDate) {
+	public void setDepositExpirationDate(Date depositExpirationDate) {
 		this.depositExpirationDate = depositExpirationDate;
 	}
 
