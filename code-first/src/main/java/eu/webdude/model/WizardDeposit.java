@@ -11,7 +11,6 @@ public class WizardDeposit {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-
 	@Column(name = "first_name", length = 50)
 	private String firstName;
 
@@ -21,7 +20,7 @@ public class WizardDeposit {
 	@Column(name = "notes", length = 1000)
 	private String notes;
 
-	@Column(name = "age")
+	@Column(name = "age", columnDefinition = "INT UNSIGNED")
 	private int age;
 
 	@Column(name = "magic_wand_creator", length = 100)
@@ -104,6 +103,10 @@ public class WizardDeposit {
 	}
 
 	public void setMagicWandSize(int magicWandSize) {
+		if (magicWandSize <= 0 || magicWandSize > 32_768) {
+			throw new IllegalArgumentException("The magic wand size should be between 0 and 32768");
+		}
+
 		this.magicWandSize = magicWandSize;
 	}
 
