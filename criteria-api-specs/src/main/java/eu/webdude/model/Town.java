@@ -14,7 +14,7 @@ public class Town {
 
 	private String name;
 
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "address_id")
 	private List<Address> addresses;
 

@@ -14,7 +14,7 @@ public class Address {
 	@Column(name = "address_text")
 	private String addressText;
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "town_id")
 	private Town town;
 

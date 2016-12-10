@@ -26,15 +26,15 @@ public class Employee {
 	@Column(name = "job_title")
 	private String jobTitle;
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id")
 	private Department department;
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "manager_id")
 	private Employee manager;
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "address_id")
 	private Address address;
 
@@ -43,7 +43,7 @@ public class Employee {
 
 	private BigDecimal salary;
 
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "employees_projects",
 		joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "employee_id"),
 		inverseJoinColumns = @JoinColumn(name = "project_id", referencedColumnName = "project_id")

@@ -13,7 +13,7 @@ public class Department {
 
 	private String name;
 
-	@OneToOne(fetch=FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "manager_id")
 	private Employee manager;
 
