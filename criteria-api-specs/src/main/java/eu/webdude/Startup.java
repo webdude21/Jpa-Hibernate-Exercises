@@ -1,5 +1,6 @@
 package eu.webdude;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import eu.webdude.model.QEmployee;
 import org.springframework.boot.CommandLineRunner;
@@ -14,20 +15,24 @@ public class Startup implements CommandLineRunner {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@Override
-	public void run(String... strings) throws Exception {
-		System.out.println("Started");
-		System.out.println(entityManager.getMetamodel());
-		doStuff();
+	private QEmployee employee;
+
+	Startup() {
+		this.employee = QEmployee.employee;
 	}
 
-	private void doStuff() {
+	@Override
+	public void run(String... strings) throws Exception {
+		countBy(employee.lastName.endsWith("on"));
+		countBy(employee.firstName.startsWithIgnoreCase("T"));
+	}
+
+	private void countBy(BooleanExpression booleanExpression) {
 		JPAQueryFactory query = new JPAQueryFactory(entityManager);
-		QEmployee employee = QEmployee.employee;
-		long resultEmplCount = query.selectFrom(QEmployee.employee)
-			.where(employee.lastName.endsWith("on"))
+		long resultEmplCount = query.selectFrom(employee)
+			.where(booleanExpression)
 			.fetchCount();
 
-		System.out.printf("%d with names ending with 'on'%n", resultEmplCount);
+		System.out.printf("%d employees matching the filter criteria %n", resultEmplCount);
 	}
 }
