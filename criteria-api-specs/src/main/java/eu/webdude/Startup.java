@@ -23,14 +23,12 @@ public class Startup implements CommandLineRunner {
 
 	@Override
 	public void run(String... strings) throws Exception {
-		countBy(employee.lastName.endsWith("on"));
-		countBy(employee.firstName.startsWithIgnoreCase("T"));
+		countBy(employee.lastName.endsWithIgnoreCase("on"), employee.firstName.startsWithIgnoreCase("T"));
 	}
-
-	private void countBy(BooleanExpression booleanExpression) {
+	private void countBy(BooleanExpression... predicates) {
 		JPAQueryFactory query = new JPAQueryFactory(entityManager);
 		long resultEmplCount = query.selectFrom(employee)
-			.where(booleanExpression)
+			.where(predicates)
 			.fetchCount();
 
 		System.out.printf("%d employees matching the filter criteria %n", resultEmplCount);
