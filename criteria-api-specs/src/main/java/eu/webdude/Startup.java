@@ -42,13 +42,14 @@ public class Startup implements CommandLineRunner {
 	@Override
 	public void run(String... strings) throws Exception {
 		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithJpdl(" where e.manager IS NULL"));
-		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithQueryDsl(employee.manager.isNull()));
-		getAverageSalaryWithQueryDsl();
+		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithQueryDsl(employee.salary.gt(10_000).and(employee.salary.lt(30_000))));
 		countBy(employee.lastName.endsWithIgnoreCase("on"), employee.firstName.startsWithIgnoreCase("T"));
 	}
 
 	private void countBy(BooleanExpression... predicates) {
-		long resultEmplCount = query.selectFrom(employee).select(employee.salary)
+		long resultEmplCount = query
+			.select(employee.salary)
+			.from(employee)
 			.where(predicates)
 			.fetchCount();
 
