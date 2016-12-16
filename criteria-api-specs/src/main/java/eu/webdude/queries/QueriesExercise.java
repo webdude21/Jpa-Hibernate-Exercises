@@ -31,8 +31,9 @@ public class QueriesExercise {
 		salaryOfThoseTakingTheMinimumSalary();
 		notAsMinimalSalary();
 		employeesWithMinimumSalaryByDepartment();
-		findAvarageSalaryByDepartment(1);
-		findAvarageSalaryByDepartmentName("Engineering");
+		findAverageSalaryByDepartment(1);
+		findAverageSalaryByDepartmentName("Engineering");
+		findEmployeesCountByDepartment("Sales");
 	}
 
 	/**
@@ -98,8 +99,9 @@ public class QueriesExercise {
 
 	/**
 	 * Write a query to find the average salary in the department #1.
+	 * @param departmentId the id of the department
 	 */
-	private void findAvarageSalaryByDepartment(int departmentId) {
+	private void findAverageSalaryByDepartment(int departmentId) {
 		Double result = query
 			.select(employee.salary.avg())
 			.from(employee)
@@ -111,8 +113,9 @@ public class QueriesExercise {
 
 	/**
 	 * Write a query to find the average salary in a given department.
+	 * @param departmentName the name of the department
 	 */
-	private void findAvarageSalaryByDepartmentName(String departmentName) {
+	private void findAverageSalaryByDepartmentName(String departmentName) {
 		Double result = query
 			.select(employee.salary.avg())
 			.from(employee)
@@ -121,5 +124,20 @@ public class QueriesExercise {
 			.fetchOne();
 
 		System.out.printf("The average salary in department %s is %f$%n", departmentName, result);
+	}
+
+	/**
+	 * Write a query to find the number of employees in the a given department.
+	 * @param departmentName the name of the department
+	 */
+	private void findEmployeesCountByDepartment(String departmentName){
+		Long result = query
+			.select(employee.count())
+			.from(employee)
+			.innerJoin(employee.department, department)
+			.where(employee.department.name.eq(departmentName))
+			.fetchOne();
+
+		System.out.printf("Department '%s' has %d employees", departmentName, result);
 	}
 }
