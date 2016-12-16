@@ -34,6 +34,7 @@ public class QueriesExercise {
 		findAverageSalaryByDepartment(1);
 		findAverageSalaryByDepartmentName("Engineering");
 		findEmployeesCountByDepartment("Sales");
+		findAllDepartmentsWithTheirAverageSalary();
 	}
 
 	/**
@@ -41,10 +42,12 @@ public class QueriesExercise {
 	 * Use a nested SELECT statement.
 	 */
 	private void salaryOfThoseTakingTheMinimumSalary() {
+		BigDecimal minSalary = query.select(employee.salary.min()).from(employee).fetchOne();
+
 		List<Tuple> result = query
 			.select(employee.firstName, employee.lastName)
 			.from(employee)
-			.where(employee.salary.eq(query.select(employee.salary.min()).from(employee).fetchOne()))
+			.where(employee.salary.eq(minSalary != null ? minSalary : BigDecimal.ZERO))
 			.fetch();
 
 		printEmployeeNames(result);
@@ -99,6 +102,7 @@ public class QueriesExercise {
 
 	/**
 	 * Write a query to find the average salary in the department #1.
+	 *
 	 * @param departmentId the id of the department
 	 */
 	private void findAverageSalaryByDepartment(int departmentId) {
@@ -108,11 +112,12 @@ public class QueriesExercise {
 			.where(employee.department.departmentId.eq(departmentId))
 			.fetchOne();
 
-		System.out.printf("The average salary in department #%d is %f$%n", departmentId, result);
+		System.out.printf("The average salary in department #%d is %.2f$%n", departmentId, result);
 	}
 
 	/**
 	 * Write a query to find the average salary in a given department.
+	 *
 	 * @param departmentName the name of the department
 	 */
 	private void findAverageSalaryByDepartmentName(String departmentName) {
@@ -123,14 +128,15 @@ public class QueriesExercise {
 			.where(employee.department.name.eq(departmentName))
 			.fetchOne();
 
-		System.out.printf("The average salary in department %s is %f$%n", departmentName, result);
+		System.out.printf("The average salary in department %s is %.2f$%n", departmentName, result);
 	}
 
 	/**
 	 * Write a query to find the number of employees in the a given department.
+	 *
 	 * @param departmentName the name of the department
 	 */
-	private void findEmployeesCountByDepartment(String departmentName){
+	private void findEmployeesCountByDepartment(String departmentName) {
 		Long result = query
 			.select(employee.count())
 			.from(employee)
@@ -139,5 +145,21 @@ public class QueriesExercise {
 			.fetchOne();
 
 		System.out.printf("Department '%s' has %d employees", departmentName, result);
+	}
+
+	/**
+	 * Write a query to find all departments and the average salary for each of them.
+	 */
+	private void findAllDepartmentsWithTheirAverageSalary() {
+		List<Tuple> result = query
+			.select(employee.salary.avg(), employee.department.name)
+			.from(employee)
+			.innerJoin(employee.department, department)
+			.groupBy(employee.department.departmentId)
+			.fetch();
+
+		result.forEach(x -> {
+			System.out.printf("The average salary for '%s' is %.2f$%n", x.get(employee.department.name), x.get(employee.salary.avg()));
+		});
 	}
 }
