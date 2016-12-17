@@ -1,6 +1,7 @@
 package eu.webdude.queries;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import eu.webdude.model.QAddress;
 import eu.webdude.model.QDepartment;
@@ -44,6 +45,7 @@ public class QueriesExercise {
 		findEmployeesCountByDepartment("Sales");
 		findAllDepartmentsWithTheirAverageSalary();
 		findHowManyEmployeesAreInEachDepartmentAndTown();
+		findEmployeesWhereLastNameHasExactCharCount(5);
 	}
 
 	/**
@@ -51,15 +53,7 @@ public class QueriesExercise {
 	 * Use a nested SELECT statement.
 	 */
 	private void salaryOfThoseTakingTheMinimumSalary() {
-		BigDecimal minSalary = query.select(employee.salary.min()).from(employee).fetchOne();
-
-		List<Tuple> result = query
-			.select(employee.firstName, employee.lastName)
-			.from(employee)
-			.where(employee.salary.eq(minSalary != null ? minSalary : BigDecimal.ZERO))
-			.fetch();
-
-		printEmployeeNames(result);
+		findEmployees(employee.salary.eq(query.select(employee.salary.min()).from(employee).fetchOne()));
 	}
 
 	private void printEmployeeNames(List<Tuple> result) {
@@ -73,17 +67,11 @@ public class QueriesExercise {
 	 * that have a salary that is up to 10% higher than the minimal salary for the company.
 	 */
 	private void notAsMinimalSalary() {
-		List<Tuple> result = query
-			.select(employee.firstName, employee.lastName)
+		findEmployees(employee.salary.goe(query
+			.select(employee.salary.min())
 			.from(employee)
-			.where(employee.salary.goe(query
-				.select(employee.salary.min())
-				.from(employee)
-				.fetchOne()
-				.multiply(BigDecimal.valueOf(0.1D))))
-			.fetch();
-
-		printEmployeeNames(result);
+			.fetchOne()
+			.multiply(BigDecimal.valueOf(0.1D))));
 	}
 
 	/**
@@ -188,5 +176,21 @@ public class QueriesExercise {
 		result.forEach(x ->
 			System.out.printf("%d employees in '%s' from %s%n", x.get(employee.count()),
 				x.get(employee.department.name), x.get(employee.address.town.name)));
+	}
+
+	/**
+	 * Write a SQL query to find the names of all employees whose last name is exactly 5 characters long. Use the built-in LEN(str) function.
+	 */
+	private void findEmployeesWhereLastNameHasExactCharCount(int charCount) {
+		findEmployees(employee.lastName.length().eq(charCount));
+	}
+
+	private void findEmployees(BooleanExpression... predicates) {
+		List<Tuple> result = query.select(employee.firstName, employee.lastName)
+			.from(employee)
+			.where(predicates)
+			.fetch();
+
+		printEmployeeNames(result);
 	}
 }
