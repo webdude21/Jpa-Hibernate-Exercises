@@ -2,8 +2,10 @@ package eu.webdude.queries;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import eu.webdude.model.QAddress;
 import eu.webdude.model.QDepartment;
 import eu.webdude.model.QEmployee;
+import eu.webdude.model.QTown;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,12 +20,18 @@ public class QueriesExercise {
 
 	private final QDepartment department;
 
+	private final QAddress address;
+
+	private final QTown town;
+
 	private QEmployee employee;
 
 	@Autowired
 	QueriesExercise(EntityManager entityManager) {
 		this.employee = QEmployee.employee;
 		this.department = QDepartment.department;
+		this.town = QTown.town;
+		this.address = QAddress.address;
 		this.query = new JPAQueryFactory(entityManager);
 	}
 
@@ -35,6 +43,7 @@ public class QueriesExercise {
 		findAverageSalaryByDepartmentName("Engineering");
 		findEmployeesCountByDepartment("Sales");
 		findAllDepartmentsWithTheirAverageSalary();
+		findHowManyEmployeesAreInEachDepartmentAndTown();
 	}
 
 	/**
@@ -158,8 +167,26 @@ public class QueriesExercise {
 			.groupBy(employee.department.departmentId)
 			.fetch();
 
-		result.forEach(x -> {
-			System.out.printf("The average salary for '%s' is %.2f$%n", x.get(employee.department.name), x.get(employee.salary.avg()));
-		});
+		result.forEach(x ->
+			System.out.printf("The average salary for '%s' is %.2f$%n",
+				x.get(employee.department.name), x.get(employee.salary.avg())));
+	}
+
+	/**
+	 * Write a query to find the count of all employees in each department and for each town.
+	 */
+	private void findHowManyEmployeesAreInEachDepartmentAndTown() {
+		List<Tuple> result = query
+			.select(employee.count(), employee.department.name, employee.address.town.name)
+			.from(employee)
+			.innerJoin(employee.department, department)
+			.innerJoin(employee.address, address)
+			.innerJoin(address.town, town)
+			.groupBy(employee.department, employee.address.town)
+			.fetch();
+
+		result.forEach(x ->
+			System.out.printf("%d employees in '%s' from %s%n", x.get(employee.count()),
+				x.get(employee.department.name), x.get(employee.address.town.name)));
 	}
 }
