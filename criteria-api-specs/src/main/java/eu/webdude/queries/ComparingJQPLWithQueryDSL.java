@@ -32,6 +32,7 @@ public class ComparingJQPLWithQueryDSL {
 
 	public void testQuery() {
 		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithJpql(" where e.manager IS NULL"));
+		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithJpqlAndDynamicFieldName(" where e.manager IS NULL", "salary"));
 		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithQueryDsl(employee.salary.gt(10_000).and(employee.salary.lt(30_000))));
 		countBy(employee.lastName.endsWithIgnoreCase("on"), employee.firstName.startsWithIgnoreCase("T"));
 
@@ -43,6 +44,10 @@ public class ComparingJQPLWithQueryDSL {
 
 	private double getAverageSalaryWithJpql(String whereClause) {
 		return (double) entityManager.createQuery("select avg(e.salary) from Employee as e" + whereClause).getSingleResult();
+	}
+
+	private double getAverageSalaryWithJpqlAndDynamicFieldName(String whereClause, String fieldName) {
+		return (double) entityManager.createQuery("select avg(e." + fieldName + ") from Employee as e" + whereClause).getSingleResult();
 	}
 
 	private Double getAverageSalaryWithQueryDsl(BooleanExpression... predicates) {
