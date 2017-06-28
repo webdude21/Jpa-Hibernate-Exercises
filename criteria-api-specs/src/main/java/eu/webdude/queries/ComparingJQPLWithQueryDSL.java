@@ -1,6 +1,10 @@
 package eu.webdude.queries;
 
+import com.querydsl.core.types.Ops;
+import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanOperation;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import eu.webdude.model.QEmployee;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,17 @@ public class ComparingJQPLWithQueryDSL {
 		this.query = new JPAQueryFactory(entityManager);
 	}
 
+	public void testQuery() {
+		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithJpql(" where e.manager IS NULL"));
+		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithQueryDsl(employee.salary.gt(10_000).and(employee.salary.lt(30_000))));
+		countBy(employee.lastName.endsWithIgnoreCase("on"), employee.firstName.startsWithIgnoreCase("T"));
+
+		Path<String> salary = Expressions.path(String.class, QEmployee.employee, "salary");
+		BooleanOperation booleanOperation = Expressions.predicate(Ops.BETWEEN, salary, Expressions.constant(10_000), Expressions.constant(30_000));
+
+		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithQueryDsl(booleanOperation));
+	}
+
 	private double getAverageSalaryWithJpql(String whereClause) {
 		return (double) entityManager.createQuery("select avg(e.salary) from Employee as e" + whereClause).getSingleResult();
 	}
@@ -36,12 +51,6 @@ public class ComparingJQPLWithQueryDSL {
 			.from(employee)
 			.where(predicates)
 			.fetchOne();
-	}
-
-	public void testQuery() {
-		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithJpql(" where e.manager IS NULL"));
-		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithQueryDsl(employee.salary.gt(10_000).and(employee.salary.lt(30_000))));
-		countBy(employee.lastName.endsWithIgnoreCase("on"), employee.firstName.startsWithIgnoreCase("T"));
 	}
 
 	private void countBy(BooleanExpression... predicates) {
