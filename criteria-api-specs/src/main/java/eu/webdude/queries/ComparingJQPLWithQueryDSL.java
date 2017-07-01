@@ -42,10 +42,12 @@ public class ComparingJQPLWithQueryDSL {
 		System.out.printf(AVERAGE_SALARY_TEXT, getAverageSalaryWithQueryDsl(booleanOperation));
 	}
 
+	// doing this of course could get you into trouble with sql injection
 	private double getAverageSalaryWithJpql(String whereClause) {
 		return (double) entityManager.createQuery("select avg(e.salary) from Employee as e" + whereClause).getSingleResult();
 	}
 
+	// doing this of course could get you into trouble with sql injection
 	private double getAverageSalaryWithJpqlAndDynamicFieldName(String whereClause, String fieldName) {
 		return (double) entityManager.createQuery("select avg(e." + fieldName + ") from Employee as e" + whereClause).getSingleResult();
 	}
